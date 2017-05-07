@@ -1,0 +1,113 @@
+version: '2'
+services:
+ alpine:
+  build:
+   context: alpine
+  image: %auth%/alpine%suffix%
+  container_name: alpine%suffix%
+  restart: 'no'
+
+ store:
+  build:
+   context: store
+  image: %auth%/store%suffix%
+  container_name: store%suffix%
+  depends_on:
+   - alpine
+  volumes:
+   - %store_data%:/data
+  restart: always
+
+ memcached:
+  build:
+   context: memcached
+  image: %auth%/memcached%suffix%
+  container_name: memcached%suffix%
+  depends_on:
+   - alpine
+  restart: always
+
+ redis:
+  build:
+   context: redis
+  image: %auth%/redis%suffix%
+  container_name: redis%suffix%
+  depends_on:
+   - alpine
+  ports:
+     - 6379:6379
+  restart: always
+
+ mysql:
+  build:
+   context: mysql
+  image: %auth%/mysql%suffix%
+  container_name: mysql%suffix%
+  depends_on:
+   - alpine
+  ports:
+     - 3306:3306
+  volumes_from:
+   - store
+  restart: always
+
+ #php:
+ # build:
+ #  context: php
+ # image: %auth%/php%suffix%
+ # container_name: php%suffix%
+ # depends_on:
+ #  - alpine
+ #  - store
+ #  - memcached
+ #  - redis
+ #  - mysql
+ # links:
+ #  - memcached
+ #  - redis
+ #  - mysql
+ # volumes:
+ #  - %php_app%:/app
+ # volumes_from:
+ #  - store
+ # restart: always
+
+ php7:
+  build:
+   context: php7
+  image: %auth%/php7%suffix%
+  container_name: php7%suffix%
+  depends_on:
+   - alpine
+   - store
+   - memcached
+   - redis
+   - mysql
+  links:
+   - memcached
+   - redis
+   - mysql
+  volumes:
+   - %php_app%:/app
+  volumes_from:
+   - store
+  restart: always
+
+ nginx:
+  build:
+   context: nginx
+  image: %auth%/nginx%suffix%
+  container_name: nginx%suffix%
+  depends_on:
+   - alpine
+   - store
+   - php
+  links:
+   - php7
+  volumes:
+   - %nginx_app%:/app
+  volumes_from:
+   - store
+  ports:
+   - 80:80
+  restart: always
