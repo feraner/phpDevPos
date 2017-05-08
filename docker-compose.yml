@@ -101,7 +101,7 @@ services:
   depends_on:
    - alpine
    - store
-   - php
+   - php7
   links:
    - php7
   volumes:

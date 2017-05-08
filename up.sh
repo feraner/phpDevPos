@@ -38,40 +38,40 @@ mkdir -pv $project_path
 current_path=$(pwd)
 
 #change to base path
-cd ${project_path}
+cd $project_path
 
 
 #create
 mkdir -pv nginx/{conf,logs}
-cp -rf ${current_path}"/projects/nginx/"* nginx/conf/
+cp -rf ${current_path}"/projects/nginx/conf/"* nginx/conf/
 
 mkdir -pv php/{conf,logs}
-cp -rf ${current_path}"/projects/php/"* php/conf/
+cp -rf $current_path"/projects/php/conf/"* php/conf/
 
 mkdir -pv data
 
-cp -rf ${current_path}"/projects/data/"* data/
+cp -rf $current_path"/projects/data/"* data/
 
 #build
-cd ${current_path}
+cd $current_path
 lock_file="build_lock_file"
 
-if [ ! -f ${lock_file} ];then
-	sed -irn "s/%auth%/${auth}/g" $(grep %auth% -rl ./ | grep -v up)
-	sed -irn "s/%email%/${email}/g" $(grep %email% -rl ./ | grep -v up)
-	sed -irn "s/%suffix%/${suffix}/g" $(grep %suffix% -rl ./ | grep -v up)
+if [ ! -f $lock_file ];then
+	sed -irn "s/%auth%/$auth/g" $(grep %auth% -rl ./ | grep -v up)
+	sed -irn "s/%email%/$email/g" $(grep %email% -rl ./ | grep -v up)
+	sed -irn "s/%suffix%/$suffix/g" $(grep %suffix% -rl ./ | grep -v up)
 
     sed -in "s#%store_data%#${project_path}data#" docker-compose.yml
     sed -in "s#%php_app%#${project_path}php#" docker-compose.yml
     sed -in "s#%nginx_app%#${project_path}nginx#" docker-compose.yml
 
 	rm -rf $(grep -rl ./ |grep rn)
-    touch ${lock_file}
+    touch $lock_file
 fi
-
-if [ "${os}X" = 'windowsX' ];then
-    docker-compose.exe up
-else
-    docker-compose up
-fi
+#
+#if [ "${os}X" = 'windowsX' ];then
+#    docker-compose.exe up
+#else
+#    docker-compose up
+#fi
 
