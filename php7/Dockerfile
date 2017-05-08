@@ -65,8 +65,7 @@ RUN chmod 4755 ./bin/busybox
 #config php
 RUN mkdir -pv /app/conf && mkdir -pv /app/logs && chown -R www.www /app/logs/
 RUN mkdir -pv /data && chown -R www.www /data
-RUN touch /var/log/php_errors.log
-RUN chmod 777 -R /var/log/
+RUN touch /var/log/php_errors.log && chmod 777 -R /var/log/
 
 #去掉ip绑定限制
 RUN sed -i -e "s/listen\s*=\s*127.0.0.1:9000/listen = 9000/g" /etc/php7/php-fpm.d/www.conf
@@ -101,8 +100,6 @@ EXPOSE 9000
 #volume
 VOLUME /app
 
-#
 #ENTRYPOINT php-fpm
-
 #exec command when start container
 CMD ["php-fpm7","-F"]

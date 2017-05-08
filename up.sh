@@ -4,6 +4,7 @@
 #=========================you need config=================================#
 #project path,like "/c/Users/wjp13/projects/docker_demo_projects/"
 project_path=''
+
 if [ "${project_path}X" = "X" ];then
     echo "You must be config project path"
     exit 0
@@ -21,8 +22,8 @@ fi
 suffix='' #empty
 
 #system
-read -p "what's the current operating system?[unix:1,windows:2]:" type
-case ${type} in
+read -p -r "what's the current operating system?[unix:1,windows:2]:" type
+case $type in
 2) os="windows"
 ;;
 *) os="unix"
@@ -31,10 +32,10 @@ esac
 
 #===========================start build=================================#
 #start
-mkdir -pv ${project_path}
+mkdir -pv $project_path
 
 #current path
-current_path=`pwd`
+current_path=$(pwd)
 
 #change to base path
 cd ${project_path}
@@ -56,15 +57,15 @@ cd ${current_path}
 lock_file="build_lock_file"
 
 if [ ! -f ${lock_file} ];then
-    sed -irn "s/%auth%/${auth}/g" `grep %auth% -rl ./ |grep -v up`
-    sed -irn "s/%email%/${email}/g" `grep %email% -rl ./ |grep -v up`
-    sed -irn "s/%suffix%/${suffix}/g" `grep %suffix% -rl ./ |grep -v up`
+	sed -irn "s/%auth%/${auth}/g" $(grep %auth% -rl ./ | grep -v up)
+	sed -irn "s/%email%/${email}/g" $(grep %email% -rl ./ | grep -v up)
+	sed -irn "s/%suffix%/${suffix}/g" $(grep %suffix% -rl ./ | grep -v up)
 
     sed -in "s#%store_data%#${project_path}data#" docker-compose.yml
     sed -in "s#%php_app%#${project_path}php#" docker-compose.yml
     sed -in "s#%nginx_app%#${project_path}nginx#" docker-compose.yml
 
-    rm -rf `grep -rl ./ |grep rn`
+	rm -rf $(grep -rl ./ |grep rn)
     touch ${lock_file}
 fi
 

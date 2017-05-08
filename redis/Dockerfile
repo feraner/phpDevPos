@@ -6,7 +6,7 @@ MAINTAINER %auth% %email%
 
 RUN apk update && apk upgrade
 
-#apk install 
+#apk install
 RUN apk add redis
 
 #config

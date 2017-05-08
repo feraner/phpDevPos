@@ -20,12 +20,12 @@ else
     mkdir -p /run/mysqld
   fi
 
-  tfile=`mktemp`
+  tfile=$(mktemp)
   if [ ! -f "$tfile" ]; then
       return 1
   fi
 
-  cat << EOF > $tfile
+  cat << EOF > "$tfile"
 USE mysql;
 FLUSH PRIVILEGES;
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY "$MYSQL_ROOT_PASSWORD" WITH GRANT OPTION;
@@ -35,16 +35,16 @@ EOF
 
   if [ "$MYSQL_DATABASE" != "" ]; then
     echo "[i] Creating database: $MYSQL_DATABASE"
-    echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE\` CHARACTER SET utf8 COLLATE utf8_general_ci;" >> $tfile
+    echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE\` CHARACTER SET utf8 COLLATE utf8_general_ci;" >> "$tfile"
 
     if [ "$MYSQL_USER" != "" ]; then
       echo "[i] Creating user: $MYSQL_USER with password $MYSQL_PASSWORD"
-      echo "GRANT ALL ON \`$MYSQL_DATABASE\`.* to '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';" >> $tfile
+      echo "GRANT ALL ON \`$MYSQL_DATABASE\`.* to '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';" >> "$tfile"
     fi
   fi
 
-  /usr/bin/mysqld --user=root --bootstrap --verbose=0 < $tfile
-  rm -f $tfile
+  /usr/bin/mysqld --user=root --bootstrap --verbose=0 < "$tfile"
+  rm -f "$tfile"
 fi
 
 

@@ -9,8 +9,6 @@ RUN apk update && apk upgrade
 #apk install 
 RUN apk add memcached
 
-#config
-
 #expose
 EXPOSE 11211
 
@@ -19,8 +17,5 @@ EXPOSE 11211
 #exec user
 USER daemon
 
-#
-ENTRYPOINT memcached
-
 #exec command when start container
-CMD ["-m","128"]
+CMD ["memcached", "-m", "128"]
